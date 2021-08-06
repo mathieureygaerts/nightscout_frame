@@ -131,7 +131,6 @@ def main():
         while True:
             if first_loop is not True:
                 single_item_query = NsItem.ns_query('https://diagoup.herokuapp.com', 1)
-                print(single_item_query)
                 query.pop(0)
                 query.append(single_item_query[0])
             first_loop = False
