@@ -3,7 +3,7 @@ from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
-# from waveshare_epd import epd7in5_V2
+from waveshare_epd import epd7in5_V2
 import time
 import logging
 
@@ -83,7 +83,7 @@ class EpdContextManager:
     def __exit__(self, exc_type, exc_value, exc_traceback):
         self.epd.init()
         self.epd.Clear()
-        self.epd7in5_V2.epdconfig.module_exit()
+        epd7in5_V2.epdconfig.module_exit()
 
 
 def graph(data):
@@ -119,37 +119,30 @@ def compositing(pillow, ns_value):
     data_time = 'Last reading: {}'.format(str(ns_value.time))
     draw.text((150, 160), data_time, font=font2, fill=(0, 0, 0))
 
-    img.show()
+#    img.show()
     return img
 
 
 def main():
     query = NsItem.ns_query('https://diagoup.herokuapp.com', 100)
 
-    try:
-        with EpdContextManager as epd:
-            first_loop = True
-            while True:
-                if first_loop is not True:
-                    single_item_query = NsItem.ns_query('https://diagoup.herokuapp.com', 1)
-                    print(single_item_query)
-                    query.pop(0)
-                    query.append(single_item_query[0])
-                first_loop = False
+    with EpdContextManager() as epd:
+        first_loop = True
+        while True:
+            if first_loop is not True:
+                single_item_query = NsItem.ns_query('https://diagoup.herokuapp.com', 1)
+                print(single_item_query)
+                query.pop(0)
+                query.append(single_item_query[0])
+            first_loop = False
 
-                epd.init()
-                ploted = graph(query)
-                composited = compositing(ploted, query[-1])
-                epd.display(epd.getbuffer(composited))
-                epd.sleep()
-                while query[-1].elapsed_time < 5:
-                    time.sleep(60 * 2)
-
-    except KeyboardInterrupt:
-        epd.init()
-        epd.Clear()
-        epd7in5_V2.epdconfig.module_exit()
-        exit()
+            epd.init()
+            ploted = graph(query)
+            composited = compositing(ploted, query[-1])
+            epd.display(epd.getbuffer(composited))
+            epd.sleep()
+            while query[-1].elapsed_time < 5:
+                time.sleep(60 * 2)
 
 
 def test():
@@ -159,5 +152,5 @@ def test():
 
 
 if __name__ == '__main__':
-    # main()
-    test()
+    main()
+    #test()
