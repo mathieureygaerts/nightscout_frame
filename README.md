@@ -1,7 +1,3 @@
-# Nightscout Raspberry LoRa Frame
+# NightscoutFrame
 
-Broadcast Blood Glucose from NightScout on an e-ink frame with LoRa modules and two Raspberry pies.
-
-#Dependencies
-
-Adafruit_CircuitPython_RFM69 - https://github.com/adafruit/Adafruit_CircuitPython_RFM69
+Display blood glucose from NightScout on an e-ink connected to a Raspberry pi.
